@@ -1,0 +1,19 @@
+{
+	"name": "test_r_vip",
+	"type": "project",
+	"description" : "Hiring test",
+	"license" : "BSD",
+	"autoload": {
+		"psr-0": {"": "classes/"}
+	},
+	"require": {
+		"phpixie/core": "2.*@dev",
+        "twig/twig": "~1.0",
+        "maximebf/debugbar": "1.*"
+    },
+	"extra": {
+		"branch-alias": {
+			"dev-master": "2.*-dev"
+		}
+	}
+}
