@@ -8,6 +8,8 @@
 	},
 	"require": {
 		"phpixie/core": "2.*@dev",
+        "symfony/dom-crawler": "3.0.*@dev",
+        "symfony/css-selector": "3.0.*@dev",
         "twig/twig": "~1.0",
         "maximebf/debugbar": "1.*"
     },
