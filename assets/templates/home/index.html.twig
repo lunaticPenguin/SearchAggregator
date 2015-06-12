@@ -1,9 +1,42 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-xs-12 well">
+    <div class="row well">
+        <div class="col-xs-12 center-block">
+            <form method="post" action="">
+                <div class="col-xs-4 col-xs-offset-4">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search for...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
 
+        <div class="col-xs-12">
+            <ul class="nav nav-tabs">
+                {% for strSEKey, hashSEInfos in hashRegisteredEngines %}
+                    {% if hashSEInfos['label'] is defined %}
+                <li role="presentation" class="active"><a href="#">{{ hashSEInfos['label'] }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+
+            {% for strSEKey, hashSEInfos in hashRegisteredEngines %}
+                {% if hashSEInfos['label'] is defined %}
+            <div>
+                <ul>
+                {% for hashRow in hashContent[strSEKey] %}
+                    <li>{{ hashRow[0] }}</li>
+                {% endfor %}
+                </ul>
+            </div>
+                {% endif %}
+            {% endfor %}
         </div>
     </div>
 {% endblock %}
