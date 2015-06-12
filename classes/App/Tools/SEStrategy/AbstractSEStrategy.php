@@ -57,7 +57,7 @@ abstract class AbstractSEStrategy implements ISEStrategy
 
         $hashCurlParameters = array(
             CURLOPT_CUSTOMREQUEST   => $this->strQueryType,
-            CURLOPT_CONNECTTIMEOUT  => 100, // timeout de 10 secondes
+            CURLOPT_CONNECTTIMEOUT  => 5, // timeout de 5 secondes
             CURLOPT_HEADER          => false,
             CURLOPT_RETURNTRANSFER  => true // résultat mis en tampon
         );
