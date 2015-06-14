@@ -15,14 +15,21 @@ class Pixie extends \PHPixie\Pixie {
 
     protected function after_bootstrap() {
         // VIEW ENGINE instanciation
+
+        $boolProdEnvironment = Config::getValue('environment', 'prod') === 'prod';
         $this->view = new \Twig_Environment(
             new \Twig_Loader_Filesystem(
                 Config::getValue('template_engine_templates_path', '../assets/templates')),
             array(
-                'cache' => (Config::getValue('environment', 'prod') !== 'dev' ? Config::getValue('template_engine_cache_path', '../cache/templates') : false),
+                'debug'         => !$boolProdEnvironment,//,
+                'cache'         => ($boolProdEnvironment ? Config::getValue('template_engine_cache_path', '../cache/templates') : false),
                 'optimizations' => 0
             )
         );
+
+        if (!$boolProdEnvironment) {
+            $this->view->addExtension(new \Twig_Extension_Debug());
+        }
     }
 
     /**

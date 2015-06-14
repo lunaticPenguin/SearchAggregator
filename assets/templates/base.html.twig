@@ -2,8 +2,11 @@
 <html>
 <head>
     {% block head %}
+        <meta charset="UTF-8">
+        <link rel="shortcut icon" href="favicon.ico">
         {% block stylesheets %}
-            <link rel="stylesheet" href="/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/css/jquery-ui.min.css" />
         {% endblock %}
         <title>Search aggregator - RVIP test</title>
     {% endblock %}
@@ -22,7 +25,9 @@
 
     {% block javascripts %}
         <script type="text/javascript" src="/js/jquery.min.js"></script>
+        <script type="text/javascript" src="/js/jquery-ui.min.js"></script>
         <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/js/main.js"></script>
     {% endblock %}
 </body>
 </html>

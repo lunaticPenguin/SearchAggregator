@@ -13,11 +13,17 @@ interface ISEStrategy
     const FIELD_URL = 1;
     const FIELD_DESCRIPTION = 2;
 
+    /**
+     * Lance la récupération des suggestions de termes recherchés
+     * @param string $strSearchedParameters paramètres de la recherche
+     * @return array suggestions des termes, avec résultats formatés
+     */
+    public function suggest($strSearchedParameters);
 
     /**
-     * Lance l'éxecution de la recherche
+     * Lance la recherche
      * @param string $strSearchedParameters paramètres de la recherche
-     * @return array résultat de l'exécution de la recherche, avec résultats formatés
+     * @return array résultat de la recherche, avec résultats formatés
      */
     public function search($strSearchedParameters);
 
@@ -26,5 +32,12 @@ interface ISEStrategy
      * @param mixed|array|string $mixedResult résultat du webservice à parser
      * @return mixed
      */
-    public function parse($mixedResult);
+    public function parseSearch($mixedResult);
+
+    /**
+     * Défini le comportement à effectuer pour parser les suggestions
+     * @param mixed|array|string $mixedResult résultat du webservice à parser
+     * @return mixed
+     */
+    public function parseSuggest($mixedResult);
 }

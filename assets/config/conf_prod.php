@@ -6,6 +6,9 @@ return array(
     'template_engine_cache_path'        => '../cache/templates',
 
     'registered_engines'                => array(
-        'GoogleRaw'     => array(), // définition des champs
+        'GoogleRaw' => array(
+            'label'     => 'Google',
+            'fields'    => array()
+        ), // définition des champs
     )
 );
