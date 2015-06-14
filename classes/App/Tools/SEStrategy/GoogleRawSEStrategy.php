@@ -2,7 +2,7 @@
 
 namespace App\Tools\SEStrategy;
 
-use Sunra\PhpSimple\HtmlDomParser;
+use App\Tools;
 use Symfony\Component\DomCrawler\Crawler;
 
 class GoogleRawSEStrategy extends AbstractSEStrategy
@@ -12,9 +12,15 @@ class GoogleRawSEStrategy extends AbstractSEStrategy
      */
     protected function init()
     {
-        $this->strUrl = 'http://www.google.fr/search';
-        $this->strQueryType = 'GET';
-        $this->strSearchFieldName = 'q';
+        $this->strSearchUrl         = 'http://www.google.fr/search';
+        $this->strSearchFieldName   = 'q';
+
+
+        $this->strSuggestUrl            = 'https://www.google.fr/s';
+        $this->arraySuggestFieldNames   = array(
+            'gs_ri' => 'psy-ab'
+        );
+
         $this->hashFieldsMapping = array(
             ISEStrategy::FIELD_TITLE        => 'blopblop',
             ISEStrategy::FIELD_DESCRIPTION  => 'blipblip',
@@ -25,7 +31,25 @@ class GoogleRawSEStrategy extends AbstractSEStrategy
     /**
      * @inheritdoc
      */
-    public function parse($mixedResult)
+    public function parseSuggest($mixedResult)
+    {
+        $hashResult = array();
+
+        if (!isset($mixedResult[1])) {
+            return $hashResult;
+        }
+
+        foreach ($mixedResult[1] as $hashSuggestion) {
+            $hashResult[] = Tools::removeAccents(strip_tags($hashSuggestion[0]));
+        }
+
+        return $hashResult;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function parseSearch($mixedResult)
     {
         $arrayResults = array();
         try {

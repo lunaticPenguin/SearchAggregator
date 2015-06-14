@@ -19,13 +19,26 @@ abstract class AbstractSEStrategy implements ISEStrategy
      * Url de recherche
      * @var string
      */
-    protected $strUrl = '';
+    protected $strSearchUrl = '';
 
     /**
      * Nom du paramètre utilisé pour transmettre les critères de la recherche
      * @var string
      */
     protected $strSearchFieldName = '';
+
+
+    /**
+     * Url de recherche des suggestions (autocomplete)
+     * @var string
+     */
+    protected $strSuggestUrl = '';
+
+    /**
+     * Noms des paramètres utilisés pour obtenir les suggestions
+     * @var array
+     */
+    protected $arraySuggestFieldNames = array();
 
     /**
      * Type de la requête HTTP à effectuer (GET|POST|PUT..)
@@ -50,30 +63,38 @@ abstract class AbstractSEStrategy implements ISEStrategy
     /**
      * @inheritdoc
      */
+    final public function suggest($strSearchedParameters)
+    {
+        $hashParameters = $this->arraySuggestFieldNames;
+        $hashParameters[$this->strSearchFieldName] = $strSearchedParameters;
+        $strUrl = sprintf('%s?%s', $this->strSuggestUrl, http_build_query($hashParameters));
+        return $this->parseSuggest($this->doCall($strUrl, $strSearchedParameters));
+    }
+
+    /**
+     * @inheritdoc
+     */
     final public function search($strSearchedParameters)
     {
-        // ressource curl
+        $strUrl = sprintf('%s?%s=%s', $this->strSearchUrl, $this->strSearchFieldName, urlencode($strSearchedParameters));
+        return $this->parseSearch($this->doCall($strUrl, $strSearchedParameters));
+    }
+
+    /**
+     * Effectue un appel curl sur le moteur de recherche correspondant
+     * @param string $strUrl
+     * @param string $strSearchedParameters
+     * @return array|string $mixedResult
+     */
+    private function doCall($strUrl, $strSearchedParameters)
+    {
         $resCurl = curl_init();
 
         $hashCurlParameters = array(
-            CURLOPT_CUSTOMREQUEST   => $this->strQueryType,
             CURLOPT_CONNECTTIMEOUT  => 5, // timeout de 5 secondes
             CURLOPT_HEADER          => false,
             CURLOPT_RETURNTRANSFER  => true // résultat mis en tampon
         );
-
-        $strUrl = $this->strUrl;
-        switch ($this->strQueryType) {
-            default:
-            case 'GET':
-                $hashCurlParameters[CURLOPT_HTTPGET] = true;
-                $strUrl = sprintf('%s?%s=%s', $this->strUrl, $this->strSearchFieldName, urlencode($strSearchedParameters));
-                break;
-            case 'POST':
-                $hashCurlParameters[CURLOPT_POST] = true;
-                $hashCurlParameters[CURLOPT_POSTFIELDS] = array($this->strSearchFieldName => $strSearchedParameters);
-                break;
-        }
 
         $hashCurlParameters[CURLOPT_URL] = $strUrl;
 
@@ -91,6 +112,6 @@ abstract class AbstractSEStrategy implements ISEStrategy
             $mixedResult = '';
         }
 
-        return $this->parse($mixedResult);
+        return $mixedResult;
     }
 }
