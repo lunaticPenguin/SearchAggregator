@@ -31,17 +31,21 @@ class Page extends Controller {
         $this->strActionName        = strtolower($this->request->param('action'));
 
         $this->hashViewVariables['title'] = ucfirst(strtolower($this->strControllerName));
+        $this->hashViewVariables['hashRegisteredEngines'] = Config::getValue('registered_engines', array());
+
+        if ($this->request->is_ajax()) {
+            header('Content-type: application/json');
+        }
     }
 
     /**
      * @inheritdoc
      */
-    public function after() {
-
+    public function after()
+    {
         $strPathToTemplate = !empty($this->strCustomTemplate)
             ? $this->strCustomTemplate
             : sprintf('%s/%s.html.twig', $this->strControllerName, $this->strActionName);
-
         $this->response->body = $this->view->render($strPathToTemplate, $this->hashViewVariables);
     }
 
