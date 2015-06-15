@@ -1,47 +1,55 @@
 $(document).ready(function () {
 
-    var funcExpiring;
     var objField = $('INPUT#q_field');
 
-    function handleSearchChanges(objElement)
-    {
-        clearTimeout(funcExpiring);
-        funcExpiring = setTimeout(function () {
-                var hashParameters = {};
-                hashParameters['q'] = objField.val();
-                $.ajax({
+    objField.autocomplete({
+        delay: 400,
+        source: function (request, response) {
+            var hashParameters = {'q':objField.val()};
+            $.ajax({
                     url: '/home/suggest',
                     cache: false,
                     data: hashParameters,
                     dataType: 'json',
                     success: function (hashData) {
-                        var hashContent = [];
-                        for (strKey in hashData) {
-                            if (hashData.hasOwnProperty(strKey)) {
-                                hashContent.push(strKey);
-                                hashContent = hashContent.concat(hashData[strKey]);
-                            }
-                        }
-
-                        console.log(hashContent);
-
-                        objField.autocomplete({
-                            source: hashContent
-                        });
-                    },
-                    error: function(e, xhr){
-                        console.log(e, xhr);
+                        response($.map(hashData, function (object) {
+                            return object;
+                        }));
                     }
-                });
-                clearTimeout(funcExpiring);
-            },
-            400
-        );
-    }
-    objField.unbind('keyup').on('keyup', handleSearchChanges);
+                }
+            );
+        },
+        select: function (index, ui) {
+            doSearch();
+        }
+    });
 
-    //objField.autocomplete({
-    //    delay: 400,
-    //    source: '/home/suggest'
-    //});
+    $('#searchForm').submit(function (e) {
+        e.preventDefault();
+        doSearch();
+        return false;
+    });
+
+    function doSearch() {
+        var hashParameters = {'q':objField.val()};
+        var strActiveTabName = $('#available-engines LI.active').data('type');
+        var objPanel = $('DIV:[data-type="'+strActiveTabName+'"]');
+        console.log(objPanel.length);
+        objPanel.html('');
+        objPanel.progressbar({
+            max: 50,
+            value: false
+        });
+
+        $.ajax({
+            url: '/home/index',
+            cache: false,
+            data: hashParameters,
+            dataType: 'json',
+            success: function (hashData) {
+                objPanel.progressbar("destroy");
+                console.log(hashData);
+            }
+        });
+    }
 });

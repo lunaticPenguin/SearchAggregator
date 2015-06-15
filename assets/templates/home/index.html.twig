@@ -3,10 +3,10 @@
 {% block content %}
     <div class="row well">
         <div class="col-xs-12 center-block">
-            <form method="get" action="">
+            <form method="get" action="" id="searchForm">
                 <div class="col-xs-4 col-xs-offset-4">
                     <div class="input-group">
-                        <input type="text" name="q" id="q_field" class="form-control" placeholder="Search for terms...">
+                        <input type="text" name="q" id="q_field" class="form-control" placeholder="Search for terms..." autocomplete="off">
                         <span class="input-group-btn">
                             <button class="btn btn-default" type="submit">
                                 <span class="glyphicon glyphicon-search"></span>
@@ -18,25 +18,35 @@
         </div>
 
         <div class="col-xs-12">
-            <ul class="nav nav-tabs">
+            <div id="search_parameter">
+            {% if strSearchedParameter != '' %}
+                <h1>Results for : <strong>{{ strSearchedParameter }}</strong></h1>
+            {% endif %}
+            </div>
+            <ul class="nav nav-tabs" id="available-engines">
                 {% for strSEKey, hashSEInfos in hashRegisteredEngines %}
                     {% if hashSEInfos['label'] is defined %}
-                <li role="presentation" class="active"><a href="#">{{ hashSEInfos['label'] }}</a></li>
+                <li role="presentation" class="active" data-type="{{ strSEKey }}"><a href="#">{{ hashSEInfos['label'] }}</a></li>
                     {% endif %}
                 {% endfor %}
             </ul>
 
+            <div id="content-engines" class="col-xs-9">
             {% for strSEKey, hashSEInfos in hashRegisteredEngines %}
                 {% if hashSEInfos['label'] is defined %}
-            <div>
-                <ul>
-                {% for hashRow in hashContent[strSEKey] %}
-                    <li>{{ hashRow[0] }}</li>
+                <div data-type="{{ strSEKey }}" class="list-group">
+
+                {% for intKey, hashRow in hashContent[strSEKey] %}
+                    <a href="{{ hashRow[1] }}" class="list-group-item" target="_blank">
+                        <h4 class="list-group-item-heading">[{{  hashContent[strSEKey]|length - intKey }}] - {{ hashRow[0] }}</h4>
+                        <p class="list-group-item-text">{{ hashRow[2]|raw }}</p>
+                    </a>
                 {% endfor %}
-                </ul>
-            </div>
+                </div>
                 {% endif %}
             {% endfor %}
+            </div>
+            <div class="col-xs-3 "></div>
         </div>
     </div>
 {% endblock %}

@@ -35,6 +35,7 @@ class Page extends Controller {
 
         if ($this->request->is_ajax()) {
             header('Content-type: application/json');
+            $this->setCustomTemplate('global/ajax_call.html.twig');
         }
     }
 
