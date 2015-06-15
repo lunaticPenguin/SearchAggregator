@@ -21,8 +21,10 @@ class Home extends Page
      */
     public function action_suggest()
     {
+        if (!$this->request->is_ajax()) {
+            exit;
+        }
         $strSearchParameter = $this->request->get('q', '');
         $this->hashViewVariables['hashContent'] = SearchHandler::suggest($strSearchParameter);
-        $this->setCustomTemplate('global/ajax_call.html.twig');
     }
 }

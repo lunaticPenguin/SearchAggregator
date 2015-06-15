@@ -17,7 +17,6 @@ class SearchHandler
     /**
      * Effectue une recherche par les différentes stratégies de moteurs de recherche et leur délègue le parsing du résultat
      * @param string $strSearchedParameters paramètres de recherche
-     * @throws \ErrorException
      * @return array données de chaque stratégie, formatées uniformément
      */
     public static function search($strSearchedParameters)
@@ -28,7 +27,6 @@ class SearchHandler
     /**
      * Effectue une recherche par les différentes stratégies de moteurs de recherche et leur délègue le parsing du résultat
      * @param string $strSearchedParameters paramètres de recherche
-     * @throws \ErrorException
      * @return array données de chaque stratégie, formatées uniformément
      */
     public static function suggest($strSearchedParameters)
@@ -45,7 +43,13 @@ class SearchHandler
     protected static function commonProcess($intType, $strSearchedParameters)
     {
         $hashResults = array();
-        foreach (Config::getValue('registered_engines', array()) as $strSEName => $hashFieldsToFetch) {
+        try {
+            $arrayEngines = Config::getValue('registered_engines', array());
+        } catch (\ErrorException $e) {
+            error_log($e->getMessage());
+            $arrayEngines = array();
+        }
+        foreach ($arrayEngines as $strSEName => $hashFieldsToFetch) {
             $strStrategyName = sprintf('App\Tools\SEStrategy\%sSEStrategy', $strSEName);
             if (!class_exists($strStrategyName)) {
                 continue;
@@ -57,7 +61,7 @@ class SearchHandler
                     ? self::$arraySEStrategyInstances[$strSEName]->search($strSearchedParameters)
                     : self::$arraySEStrategyInstances[$strSEName]->suggest($strSearchedParameters);
 
-            return $hashResults;
         }
+        return $hashResults;
     }
 }
