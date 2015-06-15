@@ -16,7 +16,7 @@ class GoogleRawSEStrategy extends AbstractSEStrategy
 
 
         $this->strSuggestUrl            = 'https://www.google.fr/s';
-        $this->strSearchFieldName       = 'q';
+        $this->strSuggestFieldName      = 'q';
         $this->arraySuggestFieldNames   = array(
             'gs_ri' => 'psy-ab'
         );
@@ -33,17 +33,16 @@ class GoogleRawSEStrategy extends AbstractSEStrategy
      */
     public function parseSuggest($mixedResult)
     {
-        $hashResult = array();
+        $arrayResults = array();
 
         if (!isset($mixedResult[1])) {
-            return $hashResult;
+            return $arrayResults;
         }
 
         foreach ($mixedResult[1] as $hashSuggestion) {
-            $hashResult[] = Tools::removeAccents(strip_tags($hashSuggestion[0]));
+            $arrayResults[] = Tools::removeAccents(strip_tags($hashSuggestion[0]));
         }
-
-        return $hashResult;
+        return $arrayResults;
     }
 
     /**
@@ -53,9 +52,13 @@ class GoogleRawSEStrategy extends AbstractSEStrategy
     {
         $arrayResults = array();
 
-        preg_match_all('/<h3 class="r"><a.*>(.*?)<\/a><\/h3>/Uim', $mixedResult, $arrayTitleMatches);
-        preg_match_all('/<h3 class="r"><a href="\/url\?q=(.*?)&amp;.*">.*<\/a><\/h3>/im', $mixedResult, $arrayUrlMatches);
-        preg_match_all('/<\/div><span class="st">([\w\W]*?)<\/span><br>/', $mixedResult, $arrayDescriptionMatches);
+        $boolStatus = preg_match_all('/<h3 class="r"><a.*>(.*?)<\/a><\/h3>/Uim', $mixedResult, $arrayTitleMatches) !== false;
+        $boolStatus = preg_match_all('/<h3 class="r"><a href="\/url\?q=(.*?)&amp;.*">.*<\/a><\/h3>/im', $mixedResult, $arrayUrlMatches) !== false && $boolStatus;
+        $boolStatus = preg_match_all('/<\/div><span class="st">([\w\W]*?)<\/span><br>/', $mixedResult, $arrayDescriptionMatches) !== false && $boolStatus;
+
+        if (!$boolStatus) {
+            return $arrayResults;
+        }
 
         $intNbEntry = count($arrayTitleMatches[0]);
         for ($intIndex = 0 ; $intIndex < $intNbEntry ; ++$intIndex) {
