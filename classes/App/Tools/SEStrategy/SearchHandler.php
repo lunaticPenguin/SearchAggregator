@@ -49,18 +49,21 @@ class SearchHandler
             error_log($e->getMessage());
             $arrayEngines = array();
         }
-        foreach ($arrayEngines as $strSEName => $hashFieldsToFetch) {
+        foreach ($arrayEngines as $strSEName => $hashSEInfos) {
+            if (!isset($hashSEInfos['active']) || !$hashSEInfos['active']) {
+                continue;
+            }
             $strStrategyName = sprintf('App\Tools\SEStrategy\%sSEStrategy', $strSEName);
             if (!class_exists($strStrategyName)) {
                 continue;
             }
 
             self::$arraySEStrategyInstances[$strSEName] = new $strStrategyName();
-            $hashResults[$strSEName] =
-                $intType === self::TYPE_SEARCH
-                    ? self::$arraySEStrategyInstances[$strSEName]->search($strSearchedParameters)
-                    : self::$arraySEStrategyInstances[$strSEName]->suggest($strSearchedParameters);
-
+            if ($intType === self::TYPE_SEARCH) {
+                $hashResults[$strSEName] = self::$arraySEStrategyInstances[$strSEName]->search($strSearchedParameters);
+            } else {
+                $hashResults[$hashSEInfos['label']] = self::$arraySEStrategyInstances[$strSEName]->suggest($strSearchedParameters);
+            }
         }
         return $hashResults;
     }

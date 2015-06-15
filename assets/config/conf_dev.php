@@ -6,9 +6,13 @@ return array(
     'template_engine_cache_path'        => '../cache/templates',
 
     'registered_engines'                => array(
+        'BingRaw' => array(
+            'active'    => true,
+            'label'     => 'Bing',
+        ),
         'GoogleRaw' => array(
-            'label'     => 'Google',
-            'fields'    => array()
-        ), // définition des champs
+            'active'    => true,
+            'label'     => 'Google'
+        )
     )
 );
