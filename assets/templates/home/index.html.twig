@@ -18,6 +18,11 @@
         </div>
 
         <div class="col-xs-12">
+            <div id="search_parameter">
+            {% if strSearchedParameter != '' %}
+                <h1>Results for : <strong>{{ strSearchedParameter }}</strong></h1>
+            {% endif %}
+            </div>
             <ul class="nav nav-tabs" id="available-engines">
                 {% for strSEKey, hashSEInfos in hashRegisteredEngines %}
                     {% if hashSEInfos['label'] is defined %}

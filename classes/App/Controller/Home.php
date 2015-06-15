@@ -13,6 +13,7 @@ class Home extends Page
 	public function action_index()
     {
         $strSearchParameter = $this->request->get('q', '');
+        $this->hashViewVariables['strSearchedParameter'] = $strSearchParameter;
         $this->hashViewVariables['hashContent'] = SearchHandler::search($strSearchParameter);
 	}
 
