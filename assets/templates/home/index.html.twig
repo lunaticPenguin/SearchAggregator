@@ -26,19 +26,22 @@
                 {% endfor %}
             </ul>
 
-            <div id="content-engines">
+            <div id="content-engines" class="col-xs-9">
             {% for strSEKey, hashSEInfos in hashRegisteredEngines %}
                 {% if hashSEInfos['label'] is defined %}
-                <div data-type="{{ strSEKey }}">
-                    <ul>
-                {% for hashRow in hashContent[strSEKey] %}
-                        <li>{{ hashRow[0] }}</li>
+                <div data-type="{{ strSEKey }}" class="list-group">
+
+                {% for intKey, hashRow in hashContent[strSEKey] %}
+                    <a href="{{ hashRow[1] }}" class="list-group-item" target="_blank">
+                        <h4 class="list-group-item-heading">[{{  hashContent[strSEKey]|length - intKey }}] - {{ hashRow[0] }}</h4>
+                        <p class="list-group-item-text">{{ hashRow[2]|raw }}</p>
+                    </a>
                 {% endfor %}
-                    </ul>
                 </div>
                 {% endif %}
             {% endfor %}
             </div>
+            <div class="col-xs-3 "></div>
         </div>
     </div>
 {% endblock %}

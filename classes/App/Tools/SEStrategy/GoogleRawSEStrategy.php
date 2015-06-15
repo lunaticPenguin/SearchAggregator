@@ -3,7 +3,6 @@
 namespace App\Tools\SEStrategy;
 
 use App\Tools;
-use Symfony\Component\DomCrawler\Crawler;
 
 class GoogleRawSEStrategy extends AbstractSEStrategy
 {
@@ -52,30 +51,24 @@ class GoogleRawSEStrategy extends AbstractSEStrategy
     public function parseSearch($mixedResult)
     {
         $arrayResults = array();
-        try {
-            $objDocument = new Crawler($mixedResult);
-            foreach ($objDocument->filter('LI[class=g]') as $objChildNode) {
-                /**
-                 * @var $objChildNode \DOMElement
-                 * @var $objSubChildNode \DOMElement
-                 */
 
-                $hashTempResult = array();
-                foreach ($objChildNode->childNodes as $objSubChildNode) {
-//                    var_dump($objSubChildNode->nodeName);
-                    switch($objSubChildNode->nodeName) {
-                        case 'h3':
-                            $hashTempResult[ISEStrategy::FIELD_TITLE] = $objSubChildNode->nodeValue;
-                            break;
-                    }
-                }
+        preg_match_all('/<h3 class="r"><a.*>(.*?)<\/a><\/h3>/Uim', $mixedResult, $arrayTitleMatches);
+        preg_match_all('/<h3 class="r"><a href="\/url\?q=(.*?)&amp;.*">.*<\/a><\/h3>/im', $mixedResult, $arrayUrlMatches);
+        preg_match_all('/<\/div><span class="st">([\w\W]*?)<\/span><br>/', $mixedResult, $arrayDescriptionMatches);
 
-                if (!empty($hashTempResult)) {
-                    $arrayResults[] = $hashTempResult;
-                }
-            }
-        } catch (\Exception $e) {
-            var_dump($e->getMessage());
+        $intNbEntry = count($arrayTitleMatches[0]);
+        for ($intIndex = 0 ; $intIndex < $intNbEntry ; ++$intIndex) {
+            $arrayResults[] = array(
+                ISEStrategy::FIELD_TITLE        => isset($arrayTitleMatches[1][$intIndex])
+                    ? utf8_encode(strip_tags($arrayTitleMatches[1][$intIndex]))
+                    : '',
+                ISEStrategy::FIELD_URL          => isset($arrayUrlMatches[1][$intIndex])
+                    ? strip_tags($arrayUrlMatches[1][$intIndex])
+                    : '',
+                ISEStrategy::FIELD_DESCRIPTION  => isset($arrayDescriptionMatches[1][$intIndex])
+                    ? utf8_encode(html_entity_decode(strip_tags($arrayDescriptionMatches[1][$intIndex]), ENT_QUOTES))
+                    : ''
+            );
         }
         return $arrayResults;
     }
