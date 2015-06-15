@@ -25,7 +25,7 @@
             </div>
             <ul class="nav nav-tabs" id="available-engines">
                 {% for strSEKey, hashSEInfos in hashRegisteredEngines %}
-                    {% if hashSEInfos['label'] is defined %}
+                    {% if hashSEInfos['active'] and hashSEInfos['label'] is defined %}
                 <li role="presentation" class="active" data-type="{{ strSEKey }}"><a href="#">{{ hashSEInfos['label'] }}</a></li>
                     {% endif %}
                 {% endfor %}
@@ -33,7 +33,7 @@
 
             <div id="content-engines" class="col-xs-9">
             {% for strSEKey, hashSEInfos in hashRegisteredEngines %}
-                {% if hashSEInfos['label'] is defined %}
+                {% if hashSEInfos['active'] and hashSEInfos['label'] is defined %}
                 <div data-type="{{ strSEKey }}" class="list-group">
 
                 {% for intKey, hashRow in hashContent[strSEKey] %}

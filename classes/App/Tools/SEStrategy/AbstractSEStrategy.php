@@ -35,6 +35,12 @@ abstract class AbstractSEStrategy implements ISEStrategy
     protected $strSuggestUrl = '';
 
     /**
+     * Nom du paramètre utilisé pour transmettre les suggestions
+     * @var string
+     */
+    protected $strSuggestFieldName = '';
+
+    /**
      * Noms des paramètres utilisés pour obtenir les suggestions
      * @var array
      */
@@ -66,7 +72,7 @@ abstract class AbstractSEStrategy implements ISEStrategy
     final public function suggest($strSearchedParameters)
     {
         $hashParameters = $this->arraySuggestFieldNames;
-        $hashParameters[$this->strSearchFieldName] = $strSearchedParameters;
+        $hashParameters[$this->strSuggestFieldName] = $strSearchedParameters;
         $strUrl = sprintf('%s?%s', $this->strSuggestUrl, http_build_query($hashParameters));
         return $this->parseSuggest($this->doCall($strUrl, $strSearchedParameters));
     }
