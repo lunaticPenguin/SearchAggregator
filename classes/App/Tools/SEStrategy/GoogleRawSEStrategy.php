@@ -21,10 +21,11 @@ class GoogleRawSEStrategy extends AbstractSEStrategy
             'gs_ri' => 'psy-ab'
         );
 
-        $this->hashFieldsMapping = array(
-            ISEStrategy::FIELD_TITLE        => 'blopblop',
-            ISEStrategy::FIELD_DESCRIPTION  => 'blipblip',
-            ISEStrategy::FIELD_URL          => 'blupblup'
+        $this->hashFieldsRegexp = array(
+            ISEStrategy::FIELD_TITLE        => '/<h3 class="r"><a.*>(.*?)<\/a><\/h3>/Uim',
+            ISEStrategy::FIELD_DESCRIPTION  => '/<\/div><span class="st">([\w\W]*?)<\/span><br>/',
+            ISEStrategy::FIELD_URL          => '/<h3 class="r"><a href="\/url\?q=(.*?)&amp;.*">.*<\/a><\/h3>/im',
+            ISEStrategy::FIELD_SUGGESTION   => ''
         );
     }
 
@@ -52,9 +53,9 @@ class GoogleRawSEStrategy extends AbstractSEStrategy
     {
         $arrayResults = array();
 
-        $boolStatus = preg_match_all('/<h3 class="r"><a.*>(.*?)<\/a><\/h3>/Uim', $mixedResult, $arrayTitleMatches) !== false;
-        $boolStatus = preg_match_all('/<h3 class="r"><a href="\/url\?q=(.*?)&amp;.*">.*<\/a><\/h3>/im', $mixedResult, $arrayUrlMatches) !== false && $boolStatus;
-        $boolStatus = preg_match_all('/<\/div><span class="st">([\w\W]*?)<\/span><br>/', $mixedResult, $arrayDescriptionMatches) !== false && $boolStatus;
+        $boolStatus = preg_match_all($this->hashFieldsRegexp[ISEStrategy::FIELD_TITLE], $mixedResult, $arrayTitleMatches) !== false;
+        $boolStatus = preg_match_all($this->hashFieldsRegexp[ISEStrategy::FIELD_URL], $mixedResult, $arrayUrlMatches) !== false && $boolStatus;
+        $boolStatus = preg_match_all($this->hashFieldsRegexp[ISEStrategy::FIELD_DESCRIPTION], $mixedResult, $arrayDescriptionMatches) !== false && $boolStatus;
 
         if (!$boolStatus) {
             return $arrayResults;

@@ -13,7 +13,7 @@ abstract class AbstractSEStrategy implements ISEStrategy
      * Définis le mapping des champs contenant les données parsées à relever pour chaque résultat de moteur de recherche
      * @var array
      */
-    protected $hashFieldsMapping = array();
+    protected $hashFieldsRegexp = array();
 
     /**
      * Url de recherche

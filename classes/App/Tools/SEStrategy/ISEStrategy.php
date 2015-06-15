@@ -9,9 +9,10 @@ namespace App\Tools\SEStrategy;
  */
 interface ISEStrategy
 {
-    const FIELD_TITLE = 0;
-    const FIELD_URL = 1;
+    const FIELD_TITLE       = 0;
+    const FIELD_URL         = 1;
     const FIELD_DESCRIPTION = 2;
+    const FIELD_SUGGESTION  = 3;
 
     /**
      * Lance la récupération des suggestions de termes recherchés

@@ -21,10 +21,11 @@ class BingRawSEStrategy extends AbstractSEStrategy
             'cvid'  => md5(time())  // avec une valeur random, à priori ça fonctionne :)
         );
 
-        $this->hashFieldsMapping = array(
-            ISEStrategy::FIELD_TITLE        => 'blopblop',
-            ISEStrategy::FIELD_DESCRIPTION  => 'blipblip',
-            ISEStrategy::FIELD_URL          => 'blupblup'
+        $this->hashFieldsRegexp = array(
+            ISEStrategy::FIELD_TITLE        => '/<li class="b_algo"><h2><a.*>(.*)<\/a><\/h2>/Uim',
+            ISEStrategy::FIELD_DESCRIPTION  => '/<li class="b_algo">.*<div class="b_caption">.*<p>(.*)<\/p>/Uim',
+            ISEStrategy::FIELD_URL          => '/<li class="b_algo"><h2><a href="(.*)".*>/U',
+            ISEStrategy::FIELD_SUGGESTION   => '/<div class="sa_tm">(.*?)<\/div>/mi'
         );
     }
 
@@ -35,7 +36,7 @@ class BingRawSEStrategy extends AbstractSEStrategy
     {
         $arrayResults = array();
 
-        if (preg_match_all('/<div class="sa_tm">(.*?)<\/div>/mi', $mixedResult, $arraySuggestionsMatches) !== false) {
+        if (preg_match_all($this->hashFieldsRegexp[ISEStrategy::FIELD_SUGGESTION], $mixedResult, $arraySuggestionsMatches) !== false) {
             foreach ($arraySuggestionsMatches[1] as $strSuggestion) {
                 $arrayResults[] = html_entity_decode(strip_tags($strSuggestion));
             }
@@ -50,9 +51,9 @@ class BingRawSEStrategy extends AbstractSEStrategy
     {
         $arrayResults = array();
 
-        $boolStatus = preg_match_all('/<li class="b_algo"><h2><a.*>(.*)<\/a><\/h2>/Uim', $mixedResult, $arrayTitleMatches) !== false;
-        $boolStatus = preg_match_all('/<li class="b_algo"><h2><a href="(.*)".*>/U', $mixedResult, $arrayUrlMatches) !== false && $boolStatus;
-        $boolStatus = preg_match_all('/<li class="b_algo">.*<div class="b_caption">.*<p>(.*)<\/p>/Uim', $mixedResult, $arrayDescriptionMatches) !== false && $boolStatus;
+        $boolStatus = preg_match_all($this->hashFieldsRegexp[ISEStrategy::FIELD_TITLE], $mixedResult, $arrayTitleMatches) !== false;
+        $boolStatus = preg_match_all($this->hashFieldsRegexp[ISEStrategy::FIELD_URL], $mixedResult, $arrayUrlMatches) !== false && $boolStatus;
+        $boolStatus = preg_match_all($this->hashFieldsRegexp[ISEStrategy::FIELD_DESCRIPTION], $mixedResult, $arrayDescriptionMatches) !== false && $boolStatus;
 
 
         if (!$boolStatus) {
