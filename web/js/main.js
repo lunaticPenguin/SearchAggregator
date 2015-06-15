@@ -12,8 +12,10 @@ $(document).ready(function () {
                     data: hashParameters,
                     dataType: 'json',
                     success: function (hashData) {
-                        response($.map(hashData, function (object) {
-                            return object;
+                        response($.map(hashData, function (arrayData, strSEType) {
+                            return $.map(arrayData, function (strSuggestion) {
+                                return strSEType + ' - ' + strSuggestion;
+                            });
                         }));
                     }
                 }
