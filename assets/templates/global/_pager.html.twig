@@ -1,0 +1,19 @@
+<nav>
+    <ul class="pagination">
+        <li {% if hashContent[strCurrentEngine]['paging']['current_page'] <= 1 %}class="disabled"{% endif %}>
+            <a href="{{ strUrl }}?p={{ hashContent[strCurrentEngine]['paging']['current_page'] - 1 }}&amp;engine={{ strCurrentEngine }}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        {% for i in 1..hashContent[strCurrentEngine]['paging']['nb_pages']  %}
+        <li {% if hashContent[strCurrentEngine]['paging']['current_page'] == i %}class="active"{% endif %}>
+            <a href="{{ strUrl }}?p={{ i }}&amp;engine={{ strCurrentEngine }}">{{ i }}</a>
+        </li>
+        {% endfor %}
+        <li {% if hashContent[strCurrentEngine]['paging']['current_page'] >= hashContent[strCurrentEngine]['paging']['nb_pages'] %}class="disabled"{% endif %}>
+            <a href="{{ strUrl }}?p={{ hashContent[strCurrentEngine]['paging']['current_page'] + 1 }}&amp;engine={{ strCurrentEngine }}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Page;
+use App\Tools;
 use App\Tools\MemCache;
 use App\Tools\SEStrategy\ISEStrategy;
 use App\Tools\SEStrategy\SearchHandler;
@@ -21,19 +22,24 @@ class Home extends Page
         foreach (array('GoogleRaw', 'BingRaw') as $strEngine) {
             for ($i = 0 ; $i < 15 ; ++$i) {
                 $hashTmp[$strEngine][] = array(
-                    ISEStrategy::FIELD_TITLE => $i . 'coucou lolildfjdsk',
+                    ISEStrategy::FIELD_TITLE => $strEngine . ' ' . $i . 'coucou lolildfjdsk',
                     ISEStrategy::FIELD_URL => 'http://perdu.com',
-                    ISEStrategy::FIELD_DESCRIPTION => $i . ':;wsdfhklsdnfg!lksnfd,glùksghj'
+                    ISEStrategy::FIELD_DESCRIPTION => $strEngine . ' ' . $i . ':;wsdfhklsdnfg!lksnfd,glùksghj'
                 );
             }
         }
 
         $strSearchKey = md5($strSearchParameter);
         if (($mixedValue = MemCache::getInstance()->get($strSearchKey)) === false) {
-            MemCache::getInstance()->set($strSearchKey, $hashTmp);
+            MemCache::getInstance()->set($strSearchKey, $hashTmp); // SearchHandler::search($strSearchParameter));
         }
 
-        $this->hashViewVariables['hashContent'] = MemCache::getInstance()->get($strSearchKey); //SearchHandler::search($strSearchParameter);
+        $this->hashViewVariables['hashContent'] = Tools::paginate(
+            MemCache::getInstance()->get($strSearchKey),
+            $this->pixie->session->get('paging'),
+            $this->pixie->session->get('engine'),
+            $this->pixie->session->get('page')
+        );
 	}
 
     /**

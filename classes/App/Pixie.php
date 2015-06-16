@@ -45,7 +45,7 @@ class Pixie extends \PHPixie\Pixie {
             header(sprintf('Location: %s', $this->router->get('default')->url()));
         } else {
             if (Config::getValue('environment', 'prod') === 'dev') {
-                var_dump($exception->getMessage());
+                var_dump($exception);
                 exit;
             }
         }

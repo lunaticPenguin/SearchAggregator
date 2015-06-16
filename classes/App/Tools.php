@@ -256,23 +256,34 @@ class Tools
     /**
      * @param array $hashData
      * @param array $hashPagingData
-     * @param $strEngine
-     * @param $intPageToDisplay
+     * @param string $strCurrentEngine
+     * @param $intPageAskedToDisplay
      * @return array
      */
-    public static function paginate(array $hashData, array $hashPagingData, $strEngine, $intPageToDisplay)
+    public static function paginate(array $hashData, array $hashPagingData, $strCurrentEngine, $intPageAskedToDisplay)
     {
         $intNbItemsPerPage = Config::getValue('nb_items_displayed', 5);
         $hashResults = array();
         foreach ($hashData as $strEngine => $arraySEData) {
 
-            // TODO: check $intPageToDisplay coherence
+            $intTotalRows = count($arraySEData);
+            $intPageMax = round($intTotalRows / $intNbItemsPerPage);
+            $intCurrentPage = $hashPagingData[$strEngine];
+            if ($strCurrentEngine === $strEngine) {
+                if ($intPageAskedToDisplay <= 0) {
+                    $intCurrentPage = 1;
+                } else if ($intPageAskedToDisplay > $intPageMax) {
+                    $intCurrentPage = $intPageMax;
+                }
+            }
+
             $hashResults[$strEngine] = array(
-                'data'      => array_slice($arraySEData, $hashPagingData[$strEngine] * $intNbItemsPerPage, $intNbItemsPerPage),
+                'data'      => array_slice($arraySEData, $hashPagingData[$strEngine] * $intNbItemsPerPage * ($intCurrentPage - 1), $intNbItemsPerPage),
                 'paging'    => array(
-                    'nb_total'      => count($arraySEData),
-                    'current_page'  => $hashPagingData[$strEngine],
-                    'nb_per_page'   => $intNbItemsPerPage
+                    'nb_total'      => $intTotalRows,
+                    'current_page'  => $intCurrentPage,
+                    'nb_per_page'   => $intNbItemsPerPage,
+                    'nb_pages'      => $intPageMax
                 )
             );
         }

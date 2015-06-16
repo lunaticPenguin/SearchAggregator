@@ -45,7 +45,9 @@ class Page extends Controller {
             $strEngine = current(array_keys($hashRegisteredEngines));
         }
         $this->pixie->session->set('engine', $strEngine);
-        $intPage = (int) $this->request->get('p', '1');
+        $this->hashViewVariables['current_engine'] = $strEngine; // résultats du moteur en cours de visualisation
+
+        $intPage = (int) $this->request->get('p', 1);
         if ($intPage <= 0) {
             $intPage = 1;
         }
