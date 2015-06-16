@@ -24,34 +24,8 @@ $(document).ready(function () {
         select: function (index, ui) {
             // suppression du nom du moteur
             objField.val(ui.item['value'].replace('Google - ', '').replace('Bing - ', '').replace('Yahoo! - ', ''));
-            doSearch();
+            //doSearch();
             return false;
         }
     });
-
-    $('#searchForm').submit(function (e) {
-        e.preventDefault();
-        doSearch();
-        return false;
-    });
-
-    function doSearch() {
-        var hashParameters = {'q':objField.val()};
-        var strActiveTabName = $('#available-engines LI.active').data('type');
-        var objPanel = $('DIV:[data-type="'+strActiveTabName+'"]');
-        $('#search-button').toggleClass('glyphicon-search');
-        $('#search-button').toggleClass('glyphicon-loading');
-
-        $.ajax({
-            url: '/home/index',
-            cache: false,
-            data: hashParameters,
-            dataType: 'json',
-            success: function (hashData) {
-                $('#search-button').toggleClass('glyphicon-search');
-                $('#search-button').toggleClass('glyphicon-loading');
-                console.log(hashData);
-            }
-        });
-    }
 });

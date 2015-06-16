@@ -15,23 +15,15 @@ class Home extends Page
      */
 	public function action_index()
     {
-        $strSearchParameter = $this->request->get('q', '');
+        $strSearchParameter = $this->request->get('q', $this->pixie->session->get('q', ''));
+        if ($strSearchParameter !== $this->pixie->session->get('q')) {
+            $this->pixie->session->set('q', $strSearchParameter);
+        }
         $this->hashViewVariables['strSearchedParameter'] = $strSearchParameter;
 
-        $hashTmp = array();
-        foreach (array('GoogleRaw', 'BingRaw') as $strEngine) {
-            for ($i = 0 ; $i < 15 ; ++$i) {
-                $hashTmp[$strEngine][] = array(
-                    ISEStrategy::FIELD_TITLE => $strEngine . ' ' . $i . 'coucou lolildfjdsk',
-                    ISEStrategy::FIELD_URL => 'http://perdu.com',
-                    ISEStrategy::FIELD_DESCRIPTION => $strEngine . ' ' . $i . ':;wsdfhklsdnfg!lksnfd,glùksghj'
-                );
-            }
-        }
-
-        $strSearchKey = md5($strSearchParameter);
+        $strSearchKey = md5(trim($strSearchParameter));
         if (($mixedValue = MemCache::getInstance()->get($strSearchKey)) === false) {
-            MemCache::getInstance()->set($strSearchKey, $hashTmp); // SearchHandler::search($strSearchParameter));
+            MemCache::getInstance()->set($strSearchKey, SearchHandler::search($strSearchParameter));
         }
 
         $hashPaging = $this->pixie->session->get('paging');
