@@ -10,3 +10,11 @@ SPAN.glyphicon-loading {
     background: url(../img/ajax-loader.gif) top left no-repeat;
     background-position: -0px -1px;
 }
+
+DIV#content-engines > DIV {
+    display: none;
+}
+
+DIV#content-engines > DIV.active {
+    display: block;
+}

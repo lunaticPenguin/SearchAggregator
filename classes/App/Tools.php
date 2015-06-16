@@ -260,25 +260,28 @@ class Tools
      * @param $intPageAskedToDisplay
      * @return array
      */
-    public static function paginate(array $hashData, array $hashPagingData, $strCurrentEngine, $intPageAskedToDisplay)
+    public static function paginate(array $hashData, array &$hashPagingData, $strCurrentEngine, $intPageAskedToDisplay)
     {
         $intNbItemsPerPage = Config::getValue('nb_items_displayed', 5);
         $hashResults = array();
         foreach ($hashData as $strEngine => $arraySEData) {
 
             $intTotalRows = count($arraySEData);
-            $intPageMax = round($intTotalRows / $intNbItemsPerPage);
+            $intPageMax = (int) round($intTotalRows / $intNbItemsPerPage);
             $intCurrentPage = $hashPagingData[$strEngine];
             if ($strCurrentEngine === $strEngine) {
                 if ($intPageAskedToDisplay <= 0) {
                     $intCurrentPage = 1;
                 } else if ($intPageAskedToDisplay > $intPageMax) {
                     $intCurrentPage = $intPageMax;
+                } else {
+                    $intCurrentPage = $intPageAskedToDisplay;
                 }
+                $hashPagingData[$strEngine] = $intCurrentPage;
             }
 
             $hashResults[$strEngine] = array(
-                'data'      => array_slice($arraySEData, $hashPagingData[$strEngine] * $intNbItemsPerPage * ($intCurrentPage - 1), $intNbItemsPerPage),
+                'data'      => array_slice($arraySEData, $intNbItemsPerPage * ($intCurrentPage - 1), $intNbItemsPerPage),
                 'paging'    => array(
                     'nb_total'      => $intTotalRows,
                     'current_page'  => $intCurrentPage,

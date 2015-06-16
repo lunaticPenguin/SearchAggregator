@@ -27,7 +27,9 @@
             <ul class="nav nav-tabs" id="available-engines">
                 {% for strSEKey, hashSEInfos in hashRegisteredEngines %}
                     {% if hashSEInfos['active'] and hashSEInfos['label'] is defined %}
-                <li role="presentation" {% if current_engine == strSEKey %}class="active"{% endif %} data-type="{{ strSEKey }}"><a href="#">{{ hashSEInfos['label'] }}</a></li>
+                <li role="presentation" {% if current_engine == strSEKey %}class="active"{% endif %} data-type="{{ strSEKey }}">
+                    <a href="?engine={{ strSEKey }}">{{ hashSEInfos['label'] }}</a>
+                </li>
                     {% endif %}
                 {% endfor %}
             </ul>

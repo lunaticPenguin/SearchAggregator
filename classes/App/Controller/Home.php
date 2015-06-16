@@ -34,12 +34,14 @@ class Home extends Page
             MemCache::getInstance()->set($strSearchKey, $hashTmp); // SearchHandler::search($strSearchParameter));
         }
 
+        $hashPaging = $this->pixie->session->get('paging');
         $this->hashViewVariables['hashContent'] = Tools::paginate(
             MemCache::getInstance()->get($strSearchKey),
-            $this->pixie->session->get('paging'),
+            $hashPaging,
             $this->pixie->session->get('engine'),
             $this->pixie->session->get('page')
         );
+        $this->pixie->session->set('paging', $hashPaging);
 	}
 
     /**
