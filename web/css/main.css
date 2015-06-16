@@ -1,0 +1,12 @@
+SPAN.glyphicon-loading {
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1;
+
+    padding: 7px 8px;
+    background: url(../img/ajax-loader.gif) top left no-repeat;
+    background-position: -0px -1px;
+}
