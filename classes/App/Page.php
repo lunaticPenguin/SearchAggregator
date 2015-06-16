@@ -31,7 +31,28 @@ class Page extends Controller {
         $this->strActionName        = strtolower($this->request->param('action'));
 
         $this->hashViewVariables['title'] = ucfirst(strtolower($this->strControllerName));
-        $this->hashViewVariables['hashRegisteredEngines'] = Config::getValue('registered_engines', array());
+        $hashRegisteredEngines = Config::getValue('registered_engines', array());
+        if (count($this->pixie->session->get('paging', array())) === 0) {
+            $hashPagingInfos = array();
+            foreach ($hashRegisteredEngines as $strSearchEngine => $hashSEInfos) {
+                $hashPagingInfos[$strSearchEngine] = 1; // page 1 pour chaque moteur
+            }
+            $this->pixie->session->set('paging', $hashPagingInfos);
+        }
+
+        $strEngine = $this->request->get('engine', '');
+        if (!array_key_exists($strEngine, $hashRegisteredEngines)) {
+            $strEngine = current(array_keys($hashRegisteredEngines));
+        }
+        $this->pixie->session->set('engine', $strEngine);
+        $intPage = (int) $this->request->get('p', '1');
+        if ($intPage <= 0) {
+            $intPage = 1;
+        }
+        $this->pixie->session->set('page', $intPage);
+
+
+        $this->hashViewVariables['hashRegisteredEngines'] = $hashRegisteredEngines;
 
         if ($this->request->is_ajax()) {
             header('Content-type: application/json');

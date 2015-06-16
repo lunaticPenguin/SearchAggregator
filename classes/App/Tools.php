@@ -252,4 +252,30 @@ class Tools
 
         return $strInput;
     }
+
+    /**
+     * @param array $hashData
+     * @param array $hashPagingData
+     * @param $strEngine
+     * @param $intPageToDisplay
+     * @return array
+     */
+    public static function paginate(array $hashData, array $hashPagingData, $strEngine, $intPageToDisplay)
+    {
+        $intNbItemsPerPage = Config::getValue('nb_items_displayed', 5);
+        $hashResults = array();
+        foreach ($hashData as $strEngine => $arraySEData) {
+
+            // TODO: check $intPageToDisplay coherence
+            $hashResults[$strEngine] = array(
+                'data'      => array_slice($arraySEData, $hashPagingData[$strEngine] * $intNbItemsPerPage, $intNbItemsPerPage),
+                'paging'    => array(
+                    'nb_total'      => count($arraySEData),
+                    'current_page'  => $hashPagingData[$strEngine],
+                    'nb_per_page'   => $intNbItemsPerPage
+                )
+            );
+        }
+        return $hashResults;
+    }
 }
