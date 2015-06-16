@@ -18,6 +18,7 @@ class Home extends Page
         $strSearchParameter = $this->request->get('q', $this->pixie->session->get('q', ''));
         if ($strSearchParameter !== $this->pixie->session->get('q')) {
             $this->pixie->session->set('q', $strSearchParameter);
+            $this->pixie->session->set('page', 1);
         }
         $this->hashViewVariables['strSearchedParameter'] = $strSearchParameter;
 
