@@ -6,10 +6,10 @@
             <form method="get" action="" id="searchForm">
                 <div class="col-xs-4 col-xs-offset-4">
                     <div class="input-group">
-                        <input type="text" name="q" id="q_field" class="form-control" placeholder="Search for terms..." autocomplete="off">
+                        <input type="text" name="q" id="q_field" class="form-control" placeholder="Search for terms..." autocomplete="off" value="{{ strSearchedParameter }}">
                         <span class="input-group-btn">
                             <button class="btn btn-default" type="submit">
-                                <span class="glyphicon glyphicon-search"></span>
+                                <span class="glyphicon glyphicon-search" id="search-button"></span>
                             </button>
                         </span>
                     </div>
@@ -19,14 +19,18 @@
 
         <div class="col-xs-12">
             <div id="search_parameter">
+                <div class="ajax-loader"></div>
             {% if strSearchedParameter != '' %}
                 <h1>Results for : <strong>{{ strSearchedParameter }}</strong></h1>
             {% endif %}
             </div>
+
             <ul class="nav nav-tabs" id="available-engines">
                 {% for strSEKey, hashSEInfos in hashRegisteredEngines %}
                     {% if hashSEInfos['active'] and hashSEInfos['label'] is defined %}
-                <li role="presentation" class="active" data-type="{{ strSEKey }}"><a href="#">{{ hashSEInfos['label'] }}</a></li>
+                <li role="presentation" {% if current_engine == strSEKey %}class="active"{% endif %}>
+                    <a href="?engine={{ strSEKey }}">{{ hashSEInfos['label'] }}</a>
+                </li>
                     {% endif %}
                 {% endfor %}
             </ul>
@@ -34,14 +38,15 @@
             <div id="content-engines" class="col-xs-9">
             {% for strSEKey, hashSEInfos in hashRegisteredEngines %}
                 {% if hashSEInfos['active'] and hashSEInfos['label'] is defined %}
-                <div data-type="{{ strSEKey }}" class="list-group">
+                <div class="list-group{% if current_engine == strSEKey %} active{% endif %}">
 
-                {% for intKey, hashRow in hashContent[strSEKey] %}
+                {% for intKey, hashRow in hashContent[strSEKey]['data'] %}
                     <a href="{{ hashRow[1] }}" class="list-group-item" target="_blank">
-                        <h4 class="list-group-item-heading">[{{  hashContent[strSEKey]|length - intKey }}] - {{ hashRow[0] }}</h4>
+                        <h4 class="list-group-item-heading">{{ hashRow[0] }}</h4>
                         <p class="list-group-item-text">{{ hashRow[2]|raw }}</p>
                     </a>
                 {% endfor %}
+                    {% include 'global/_pager.html.twig' with {'strCurrentEngine': strSEKey, 'strUrl' : '/home/index'} %}
                 </div>
                 {% endif %}
             {% endfor %}

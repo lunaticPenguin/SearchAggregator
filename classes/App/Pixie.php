@@ -43,6 +43,11 @@ class Pixie extends \PHPixie\Pixie {
         // Handle 404 error
         if ($exception instanceof PageNotFound) {
             header(sprintf('Location: %s', $this->router->get('default')->url()));
+        } else {
+            if (Config::getValue('environment', 'prod') === 'dev') {
+                var_dump($exception);
+                exit;
+            }
         }
     }
 }

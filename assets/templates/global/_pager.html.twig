@@ -1,0 +1,43 @@
+<nav>
+    <ul class="pagination">
+        {% if hashContent[strCurrentEngine]['paging']['current_page'] <= 1 %}
+        <li class="disabled">
+            <span aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </span>
+        </li>
+        {% else %}
+        <li>
+            <a href="{{ strUrl }}?p={{ hashContent[strCurrentEngine]['paging']['current_page'] - 1 }}&amp;engine={{ strCurrentEngine }}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        {% endif %}
+
+        {% if hashContent[strCurrentEngine]['paging']['nb_pages'] == 0 %}
+            <li class="active">
+                <span>1</span>
+            </li>
+        {% else %}
+            {% for i in 1..hashContent[strCurrentEngine]['paging']['nb_pages']  %}
+        <li {% if hashContent[strCurrentEngine]['paging']['current_page'] == i %}class="active"{% endif %}>
+            <a href="{{ strUrl }}?p={{ i }}&amp;engine={{ strCurrentEngine }}">{{ i }}</a>
+        </li>
+            {% endfor %}
+        {% endif %}
+
+        {% if hashContent[strCurrentEngine]['paging']['current_page'] >= hashContent[strCurrentEngine]['paging']['nb_pages'] %}
+            <li class="disabled">
+                <span aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </span>
+            </li>
+        {% else %}
+            <li>
+                <a href="{{ strUrl }}?p={{ hashContent[strCurrentEngine]['paging']['current_page'] + 1 }}&amp;engine={{ strCurrentEngine }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>

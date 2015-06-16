@@ -22,36 +22,10 @@ $(document).ready(function () {
             );
         },
         select: function (index, ui) {
-            doSearch();
+            // suppression du nom du moteur
+            objField.val(ui.item['value'].replace('Google - ', '').replace('Bing - ', '').replace('Yahoo! - ', ''));
+            //doSearch();
+            return false;
         }
     });
-
-    $('#searchForm').submit(function (e) {
-        e.preventDefault();
-        doSearch();
-        return false;
-    });
-
-    function doSearch() {
-        var hashParameters = {'q':objField.val()};
-        var strActiveTabName = $('#available-engines LI.active').data('type');
-        var objPanel = $('DIV:[data-type="'+strActiveTabName+'"]');
-        console.log(objPanel.length);
-        objPanel.html('');
-        objPanel.progressbar({
-            max: 50,
-            value: false
-        });
-
-        $.ajax({
-            url: '/home/index',
-            cache: false,
-            data: hashParameters,
-            dataType: 'json',
-            success: function (hashData) {
-                objPanel.progressbar("destroy");
-                console.log(hashData);
-            }
-        });
-    }
 });

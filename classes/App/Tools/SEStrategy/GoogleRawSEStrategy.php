@@ -65,7 +65,7 @@ class GoogleRawSEStrategy extends AbstractSEStrategy
         for ($intIndex = 0 ; $intIndex < $intNbEntry ; ++$intIndex) {
             $arrayResults[] = array(
                 ISEStrategy::FIELD_TITLE        => isset($arrayTitleMatches[1][$intIndex])
-                    ? Tools::removeAccents(utf8_encode(strip_tags($arrayTitleMatches[1][$intIndex])))
+                    ? utf8_encode(html_entity_decode(strip_tags($arrayTitleMatches[1][$intIndex])))
                     : '',
                 ISEStrategy::FIELD_URL          => isset($arrayUrlMatches[1][$intIndex])
                     ? html_entity_decode(strip_tags($arrayUrlMatches[1][$intIndex]), ENT_QUOTES)
