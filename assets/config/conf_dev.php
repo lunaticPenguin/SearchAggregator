@@ -15,6 +15,10 @@ return array(
         'GoogleRaw' => array(
             'active'    => true,
             'label'     => 'Google'
+        ),
+        'YahooRaw' => array(
+            'active'    => true,
+            'label'     => 'Yahoo!'
         )
     )
 );
