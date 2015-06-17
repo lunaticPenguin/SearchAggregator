@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Page;
 use App\Tools;
 use App\Tools\MemCache;
-use App\Tools\SEStrategy\ISEStrategy;
 use App\Tools\SEStrategy\SearchHandler;
 
 class Home extends Page

@@ -35,14 +35,17 @@ class Page extends Controller {
         if (count($this->pixie->session->get('paging', array())) === 0) {
             $hashPagingInfos = array();
             foreach ($hashRegisteredEngines as $strSearchEngine => $hashSEInfos) {
-                $hashPagingInfos[$strSearchEngine] = 1; // page 1 pour chaque moteur
+                if (isset($hashSEInfos['active']) && $hashSEInfos['active']) {
+                    $hashPagingInfos[$strSearchEngine] = 1; // page 1 pour chaque moteur
+                }
             }
             $this->pixie->session->set('paging', $hashPagingInfos);
         }
 
         $strEngine = $this->request->get('engine', '');
-        if (!array_key_exists($strEngine, $hashRegisteredEngines)) {
-            $strEngine = current(array_keys($hashRegisteredEngines));
+        $hashPagingInfos = $this->pixie->session->get('paging');
+        if (!array_key_exists($strEngine, $hashPagingInfos)) {
+            $strEngine = current(array_keys($hashPagingInfos));
         }
         $this->pixie->session->set('engine', $strEngine);
         $this->hashViewVariables['current_engine'] = $strEngine; // résultats du moteur en cours de visualisation
