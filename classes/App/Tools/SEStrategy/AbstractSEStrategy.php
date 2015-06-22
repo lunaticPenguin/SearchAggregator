@@ -74,7 +74,7 @@ abstract class AbstractSEStrategy implements ISEStrategy
         $hashParameters = $this->arraySuggestFieldNames;
         $hashParameters[$this->strSuggestFieldName] = $strSearchedParameters;
         $strUrl = sprintf('%s?%s', $this->strSuggestUrl, http_build_query($hashParameters));
-        return $this->parseSuggest($this->doCall($strUrl, $strSearchedParameters));
+        return $this->parseSuggest($this->doCall($strUrl));
     }
 
     /**
@@ -83,16 +83,15 @@ abstract class AbstractSEStrategy implements ISEStrategy
     final public function search($strSearchedParameters)
     {
         $strUrl = sprintf('%s?%s=%s', $this->strSearchUrl, $this->strSearchFieldName, urlencode($strSearchedParameters));
-        return $this->parseSearch($this->doCall($strUrl, $strSearchedParameters));
+        return $this->parseSearch($this->doCall($strUrl));
     }
 
     /**
      * Effectue un appel curl sur le moteur de recherche correspondant
      * @param string $strUrl
-     * @param string $strSearchedParameters
      * @return array|string $mixedResult
      */
-    private function doCall($strUrl, $strSearchedParameters)
+    private function doCall($strUrl)
     {
         $resCurl = curl_init();
 

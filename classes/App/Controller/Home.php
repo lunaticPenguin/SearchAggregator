@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Page;
 use App\Tools;
-use App\Tools\MemCache;
 use App\Tools\SEStrategy\SearchHandler;
 
 class Home extends Page
@@ -22,13 +21,13 @@ class Home extends Page
         $this->hashViewVariables['strSearchedParameter'] = $strSearchParameter;
 
         $strSearchKey = md5(trim($strSearchParameter));
-        if (($mixedValue = MemCache::getInstance()->get($strSearchKey)) === false) {
-            MemCache::getInstance()->set($strSearchKey, SearchHandler::search($strSearchParameter));
+        if (($mixedValue = $this->pixie->cache->get($strSearchKey)) === false) {
+            $this->pixie->cache->set($strSearchKey, SearchHandler::search($strSearchParameter));
         }
 
         $hashPaging = $this->pixie->session->get('paging');
         $this->hashViewVariables['hashContent'] = Tools::paginate(
-            MemCache::getInstance()->get($strSearchKey),
+            $this->pixie->cache->get($strSearchKey),
             $hashPaging,
             $this->pixie->session->get('engine'),
             $this->pixie->session->get('page')

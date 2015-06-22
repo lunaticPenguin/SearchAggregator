@@ -20,5 +20,7 @@ return array(
             'active'    => true,
             'label'     => 'Yahoo!'
         )
-    )
+    ),
+
+    'cache'                             => 'PixieSession'
 );

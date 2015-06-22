@@ -47,14 +47,14 @@ class MemCache
      * @param string $strKey clé correspondant à la valeur à stocker
      * @param mixed $mixedValue valeur à stocker
      * @param mixed $mixedFlag flag de compression zlib
-     * @param int $întDuration durée de validité du stockage (sec). 0 <=> période indéfinie
+     * @param int $intDuration durée de validité du stockage (sec). 0 <=> période indéfinie
      * @throws \ErrorException
      *
      * @see \MemCache::set()
      */
-    public function set($strKey, $mixedValue, $mixedFlag = false, $întDuration = 600)
+    public function set($strKey, $mixedValue, $mixedFlag = false, $intDuration = 600)
     {
-        if (!$this->objMemCache->set($strKey, $mixedValue, $mixedFlag, $întDuration)) {
+        if (!$this->objMemCache->set($strKey, $mixedValue, $mixedFlag, $intDuration)) {
             throw new \ErrorException('Unable to set data to mem_cache server.');
         }
     }
