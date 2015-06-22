@@ -1,6 +1,7 @@
 <?php
 
 namespace App;
+use App\Tools\CacheStrategy\ICacheStrategy;
 use PHPixie\Exception\PageNotFound;
 
 /**
@@ -12,6 +13,11 @@ class Pixie extends \PHPixie\Pixie {
      * @var \Twig_Environment $view View module
      */
     public $view;
+
+    /**
+     * @var ICacheStrategy
+     */
+    public $cache;
 
     protected function after_bootstrap() {
         // VIEW ENGINE instanciation
@@ -30,6 +36,12 @@ class Pixie extends \PHPixie\Pixie {
         if (!$boolProdEnvironment) {
             $this->view->addExtension(new \Twig_Extension_Debug());
         }
+
+        $strStrategyName = sprintf('App\Tools\CacheStrategy\%sCacheStrategy', Config::getValue('cache', 'PixieSession'));
+        if (!class_exists($strStrategyName)) {
+            throw new \ErrorException(sprintf('Unable to find %s\'s class', $strStrategyName));
+        }
+        $this->cache = new $strStrategyName(array('object' => $this->session));
     }
 
     /**
