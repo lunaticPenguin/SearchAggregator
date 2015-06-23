@@ -22,10 +22,16 @@ class Page extends Controller {
 
     protected $hashViewVariables = array();
 
+    protected $boolProdEnvironment;
+
     /**
      * @inheritdoc
      */
     public function before() {
+
+        $this->boolProdEnvironment = Config::getValue('environment', 'prod') === 'prod';
+        $this->hashViewVariables['boolProdEnvironment'] = $this->boolProdEnvironment;
+
         $this->view = $this->pixie->view;
         $this->strControllerName    = strtolower($this->request->param('controller'));
         $this->strActionName        = strtolower($this->request->param('action'));
@@ -70,6 +76,10 @@ class Page extends Controller {
      */
     public function after()
     {
+        if (!$this->boolProdEnvironment) {
+            $this->hashViewVariables['debugbar'] = $this->pixie->objDebugBar->getJavascriptRenderer();
+        }
+
         $strPathToTemplate = !empty($this->strCustomTemplate)
             ? $this->strCustomTemplate
             : sprintf('%s/%s.html.twig', $this->strControllerName, $this->strActionName);

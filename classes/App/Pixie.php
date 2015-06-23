@@ -2,6 +2,7 @@
 
 namespace App;
 use App\Tools\CacheStrategy\ICacheStrategy;
+use DebugBar\StandardDebugBar;
 use PHPixie\Exception\PageNotFound;
 
 /**
@@ -17,7 +18,12 @@ class Pixie extends \PHPixie\Pixie {
     /**
      * @var ICacheStrategy
      */
-    public $cache;
+    public $cache = null;
+
+    /**
+     * @var StandardDebugBar
+     */
+    public $objDebugBar = null;
 
     protected function after_bootstrap() {
         // VIEW ENGINE instanciation
@@ -42,6 +48,10 @@ class Pixie extends \PHPixie\Pixie {
             throw new \ErrorException(sprintf('Unable to find %s\'s class', $strStrategyName));
         }
         $this->cache = new $strStrategyName(array('object' => $this->session));
+
+        if (!$boolProdEnvironment) {
+            $this->objDebugBar = new StandardDebugBar();
+        }
     }
 
     /**
