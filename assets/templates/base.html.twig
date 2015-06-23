@@ -11,6 +11,11 @@
         {% endblock %}
         <title>Search aggregator - R-VIP</title>
     {% endblock %}
+
+
+    {% if not boolProdEnvironment %}
+        {{ debugbar.renderHead()|raw }}
+    {% endif %}
 </head>
 <body>
 
@@ -29,6 +34,10 @@
         <script type="text/javascript" src="/js/jquery-ui.min.js"></script>
         <script type="text/javascript" src="/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="/js/main.js"></script>
+
+        {% if not boolProdEnvironment %}
+        {{ debugbar.render()|raw }}
+        {% endif %}
     {% endblock %}
 </body>
 </html>

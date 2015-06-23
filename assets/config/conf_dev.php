@@ -10,7 +10,7 @@ return array(
     'registered_engines'                => array(
         'BingRaw' => array(
             'active'    => true,
-            'label'     => 'Bing',
+            'label'     => 'Bing'
         ),
         'GoogleRaw' => array(
             'active'    => true,
