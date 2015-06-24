@@ -270,12 +270,11 @@ class Tools
             $intPageMax = (int) round($intTotalRows / $intNbItemsPerPage);
             $intCurrentPage = $hashPagingData[$strEngine];
             if ($strCurrentEngine === $strEngine) {
+                $intCurrentPage = $intPageAskedToDisplay;
                 if ($intPageAskedToDisplay <= 0) {
                     $intCurrentPage = 1;
                 } else if ($intPageAskedToDisplay > $intPageMax) {
                     $intCurrentPage = $intPageMax;
-                } else {
-                    $intCurrentPage = $intPageAskedToDisplay;
                 }
                 $hashPagingData[$strEngine] = $intCurrentPage;
             }

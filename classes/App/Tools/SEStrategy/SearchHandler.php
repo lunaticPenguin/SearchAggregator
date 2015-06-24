@@ -3,6 +3,7 @@
 namespace App\Tools\SEStrategy;
 
 use App\Config;
+use App\Observers\ObserverHandler;
 
 class SearchHandler
 {
@@ -65,6 +66,6 @@ class SearchHandler
                 $hashResults[$hashSEInfos['label']] = self::$arraySEStrategyInstances[$strSEName]->suggest($strSearchedParameters);
             }
         }
-        return $hashResults;
+        return ObserverHandler::applyMHook('result_search', $hashResults, array());
     }
 }

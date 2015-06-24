@@ -22,5 +22,9 @@ return array(
         )
     ),
 
+    'registered_observers'  => array(
+        'App\Observer\ScoringObserver'
+    ),
+
     'cache'                             => 'PixieSession'
 );

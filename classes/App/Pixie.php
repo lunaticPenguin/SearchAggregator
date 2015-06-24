@@ -1,6 +1,7 @@
 <?php
 
 namespace App;
+use App\Observers\ObserverHandler;
 use App\Tools\CacheStrategy\ICacheStrategy;
 use DebugBar\StandardDebugBar;
 use PHPixie\Exception\PageNotFound;
@@ -52,6 +53,8 @@ class Pixie extends \PHPixie\Pixie {
         if (!$boolProdEnvironment) {
             $this->objDebugBar = new StandardDebugBar();
         }
+
+        ObserverHandler::load(Config::getValue('registered_observers', array()));
     }
 
     /**
