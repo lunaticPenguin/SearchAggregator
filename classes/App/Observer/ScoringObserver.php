@@ -22,6 +22,12 @@ class ScoringObserver extends AbstractObserver
     private static $intCountNbEngine = 0;
 
     /**
+     * Nombre de résultats par moteur
+     * @var array
+     */
+    private static $hashNbEngineResults = array();
+
+    /**
      * Register observer's methods to specified hooks
      */
     public function load()
@@ -60,8 +66,9 @@ class ScoringObserver extends AbstractObserver
         $hashUrlFactors = array();
         $intNbEngine = count($hashResults);
         foreach ($hashResults as $strEngine => $arrayResult) {
-            ++self::$intCountNbEngine;
             $intCountResults = count($arrayResult);
+            ++self::$intCountNbEngine;
+            self::$hashNbEngineResults[$strEngine] = $intCountResults;
             foreach ($arrayResult as $intIndex => $hashRow) {
                 if (!array_key_exists($hashRow[ISEStrategy::FIELD_URL], $hashUrlFactors)) {
                     $hashUrlFactors[$hashRow[ISEStrategy::FIELD_URL]] =
@@ -116,14 +123,28 @@ class ScoringObserver extends AbstractObserver
      */
     public static function sortScoring(&$hashRowA, &$hashRowB)
     {
-        $intAvgIndexA = (int) (array_sum($hashRowA['index']) / self::$intCountNbEngine);
-        $intAvgIndexB = (int) (array_sum($hashRowB['index']) / self::$intCountNbEngine);
-
+        $intAvgIndexA = self::computeAveragePercentPosition($hashRowA['index']);
+        $intAvgIndexB = self::computeAveragePercentPosition($hashRowB['index']);
 
         $hashRowA['scoring'] = self::computeRowWeight($intAvgIndexA, $hashRowA);
         $hashRowB['scoring'] = self::computeRowWeight($intAvgIndexB, $hashRowB);
 
         return $hashRowA['scoring'] < $hashRowB['scoring'];
+    }
+
+
+    /**
+     * Calcule la moyenne de la somme des % des index d'un résultat pour chaque moteur
+     * @param array $hashIndexes
+     * @return float|int
+     */
+    protected static function computeAveragePercentPosition(array $hashIndexes)
+    {
+        $intSumPercent = 0;
+        foreach ($hashIndexes as $strEngine => $intIndex) {
+            $intSumPercent += $intIndex / self::$hashNbEngineResults[$strEngine];
+        }
+        return (int) ($intSumPercent / self::$intCountNbEngine * 100);
     }
 
     /**
