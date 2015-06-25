@@ -264,6 +264,7 @@ class Tools
     {
         $intNbItemsPerPage = Config::getValue('nb_items_displayed', 5);
         $hashResults = array();
+
         foreach ($hashData as $strEngine => $arraySEData) {
 
             $intTotalRows = count($arraySEData);

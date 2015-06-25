@@ -66,6 +66,6 @@ class SearchHandler
                 $hashResults[$hashSEInfos['label']] = self::$arraySEStrategyInstances[$strSEName]->suggest($strSearchedParameters);
             }
         }
-        return ObserverHandler::applyMHook('result_search', $hashResults, array());
+        return ObserverHandler::applyMHook('result_search', $hashResults, array('type' => $intType));
     }
 }
