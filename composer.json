@@ -9,11 +9,33 @@
 	"require": {
 		"phpixie/core": "2.*@dev",
         "twig/twig": "~1.0",
-        "maximebf/debugbar": "1.*"
+        "maximebf/debugbar": "1.*",
+        "lunaticPenguin/PhpTools": "dev"
     },
 	"extra": {
 		"branch-alias": {
 			"dev-master": "2.*-dev"
 		}
-	}
+	},
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "lunaticPenguin/PhpTools",
+                "version": "dev",
+                "dist": {
+                    "url": "https://github.com/lunaticPenguin/PhpTools/archive/develop.zip",
+                    "type": "zip"
+                },
+                "source": {
+                    "url": "https://github.com/lunaticPenguin/PhpTools.git",
+                    "type": "git",
+                    "reference":"develop"
+                },
+                "autoload": {
+                    "classmap": {"PhpTools\\App":"app/"}
+                }
+            }
+        }
+    ]
 }

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Observers\ObserverHandler;
 use PHPixie\Controller;
 
 /**
@@ -37,7 +38,7 @@ class Page extends Controller {
         $this->strActionName        = strtolower($this->request->param('action'));
 
         $this->hashViewVariables['title'] = ucfirst(strtolower($this->strControllerName));
-        $hashRegisteredEngines = Config::getValue('registered_engines', array());
+        $hashRegisteredEngines = ObserverHandler::applyMHook('init_view_registered_engines', Config::getValue('registered_engines', array()));
         if (count($this->pixie->session->get('paging', array())) === 0) {
             $hashPagingInfos = array();
             foreach ($hashRegisteredEngines as $strSearchEngine => $hashSEInfos) {
