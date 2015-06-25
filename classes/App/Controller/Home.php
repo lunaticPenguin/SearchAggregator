@@ -13,7 +13,7 @@ class Home extends Page
      */
 	public function action_index()
     {
-        $strSearchParameter = $this->request->get('q', $this->pixie->session->get('q', ''));
+        $strSearchParameter = Tools::removeAccents($this->request->get('q', $this->pixie->session->get('q', '')));
         if ($strSearchParameter !== $this->pixie->session->get('q')) {
             $this->pixie->session->set('q', $strSearchParameter);
             $this->pixie->session->set('page', 1);
@@ -43,7 +43,7 @@ class Home extends Page
         if (!$this->request->is_ajax()) {
             exit;
         }
-        $strSearchParameter = $this->request->get('q', '');
+        $strSearchParameter = Tools::removeAccents($this->request->get('q', ''));
         $this->hashViewVariables['hashContent'] = SearchHandler::suggest($strSearchParameter);
     }
 }
