@@ -3,6 +3,7 @@
 namespace App;
 use App\Observers\ObserverHandler;
 use App\Tools\CacheStrategy\ICacheStrategy;
+use DebugBar\DataCollector\ExceptionsCollector;
 use DebugBar\StandardDebugBar;
 use PHPixie\Exception\PageNotFound;
 
@@ -70,8 +71,22 @@ class Pixie extends \PHPixie\Pixie {
             header(sprintf('Location: %s', $this->router->get('default')->url()));
         } else {
             if (Config::getValue('environment', 'prod') === 'dev') {
-                var_dump($exception);
+                /**
+                 * @var ExceptionsCollector $objExceptionsCollector
+                 */
+                $objExceptionsCollector = $this->objDebugBar->getCollector('exceptions');
+                $objExceptionsCollector->addException($exception);
                 exit;
+            } else {
+                $strMessage = sprintf(
+                    "%s file:%s on line %d (code: %d)\nTRACE:\n%s",
+                    $exception->getMessage(),
+                    $exception->getFile(),
+                    $exception->getLine(),
+                    $exception->getCode(),
+                    $exception->getTraceAsString()
+                );
+                error_log($strMessage);
             }
         }
     }
