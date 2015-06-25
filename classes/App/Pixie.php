@@ -1,6 +1,10 @@
 <?php
 
 namespace App;
+use App\Observers\ObserverHandler;
+use App\Tools\CacheStrategy\ICacheStrategy;
+use DebugBar\DataCollector\ExceptionsCollector;
+use DebugBar\StandardDebugBar;
 use PHPixie\Exception\PageNotFound;
 
 /**
@@ -12,6 +16,16 @@ class Pixie extends \PHPixie\Pixie {
      * @var \Twig_Environment $view View module
      */
     public $view;
+
+    /**
+     * @var ICacheStrategy
+     */
+    public $cache = null;
+
+    /**
+     * @var StandardDebugBar
+     */
+    public $objDebugBar = null;
 
     protected function after_bootstrap() {
         // VIEW ENGINE instanciation
@@ -30,6 +44,18 @@ class Pixie extends \PHPixie\Pixie {
         if (!$boolProdEnvironment) {
             $this->view->addExtension(new \Twig_Extension_Debug());
         }
+
+        $strStrategyName = sprintf('App\Tools\CacheStrategy\%sCacheStrategy', Config::getValue('cache', 'PixieSession'));
+        if (!class_exists($strStrategyName)) {
+            throw new \ErrorException(sprintf('Unable to find %s\'s class', $strStrategyName));
+        }
+        $this->cache = new $strStrategyName(array('object' => $this->session));
+
+        if (!$boolProdEnvironment) {
+            $this->objDebugBar = new StandardDebugBar();
+        }
+
+        ObserverHandler::load(Config::getValue('registered_observers', array()));
     }
 
     /**
@@ -45,8 +71,22 @@ class Pixie extends \PHPixie\Pixie {
             header(sprintf('Location: %s', $this->router->get('default')->url()));
         } else {
             if (Config::getValue('environment', 'prod') === 'dev') {
-                var_dump($exception);
+                /**
+                 * @var ExceptionsCollector $objExceptionsCollector
+                 */
+                $objExceptionsCollector = $this->objDebugBar->getCollector('exceptions');
+                $objExceptionsCollector->addException($exception);
                 exit;
+            } else {
+                $strMessage = sprintf(
+                    "%s file:%s on line %d (code: %d)\nTRACE:\n%s",
+                    $exception->getMessage(),
+                    $exception->getFile(),
+                    $exception->getLine(),
+                    $exception->getCode(),
+                    $exception->getTraceAsString()
+                );
+                error_log($strMessage);
             }
         }
     }

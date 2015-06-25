@@ -10,7 +10,7 @@ return array(
     'registered_engines'                => array(
         'BingRaw' => array(
             'active'    => true,
-            'label'     => 'Bing',
+            'label'     => 'Bing'
         ),
         'GoogleRaw' => array(
             'active'    => true,
@@ -20,5 +20,11 @@ return array(
             'active'    => true,
             'label'     => 'Yahoo!'
         )
-    )
+    ),
+
+    'registered_observers'  => array(
+        'App\Observer\ScoringObserver'
+    ),
+
+    'cache'                             => 'PixieSession'
 );

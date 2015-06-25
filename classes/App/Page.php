@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Observers\ObserverHandler;
 use PHPixie\Controller;
 
 /**
@@ -22,16 +23,22 @@ class Page extends Controller {
 
     protected $hashViewVariables = array();
 
+    protected $boolProdEnvironment;
+
     /**
      * @inheritdoc
      */
     public function before() {
+
+        $this->boolProdEnvironment = Config::getValue('environment', 'prod') === 'prod';
+        $this->hashViewVariables['boolProdEnvironment'] = $this->boolProdEnvironment;
+
         $this->view = $this->pixie->view;
         $this->strControllerName    = strtolower($this->request->param('controller'));
         $this->strActionName        = strtolower($this->request->param('action'));
 
         $this->hashViewVariables['title'] = ucfirst(strtolower($this->strControllerName));
-        $hashRegisteredEngines = Config::getValue('registered_engines', array());
+        $hashRegisteredEngines = ObserverHandler::applyMHook('init_view_registered_engines', Config::getValue('registered_engines', array()));
         if (count($this->pixie->session->get('paging', array())) === 0) {
             $hashPagingInfos = array();
             foreach ($hashRegisteredEngines as $strSearchEngine => $hashSEInfos) {
@@ -70,6 +77,10 @@ class Page extends Controller {
      */
     public function after()
     {
+        if (!$this->boolProdEnvironment) {
+            $this->hashViewVariables['debugbar'] = $this->pixie->objDebugBar->getJavascriptRenderer();
+        }
+
         $strPathToTemplate = !empty($this->strCustomTemplate)
             ? $this->strCustomTemplate
             : sprintf('%s/%s.html.twig', $this->strControllerName, $this->strActionName);
