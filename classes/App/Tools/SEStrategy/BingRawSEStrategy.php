@@ -62,9 +62,15 @@ class BingRawSEStrategy extends AbstractSEStrategy
         $intNbEntry = count($arrayTitleMatches[1]);
         for ($intIndex = 0 ; $intIndex < $intNbEntry ; ++$intIndex) {
             $arrayResults[] = array(
-                ISEStrategy::FIELD_TITLE        => html_entity_decode(strip_tags($arrayTitleMatches[1][$intIndex])),
-                ISEStrategy::FIELD_URL          => html_entity_decode(strip_tags($arrayUrlMatches[1][$intIndex])),
-                ISEStrategy::FIELD_DESCRIPTION  => html_entity_decode(strip_tags($arrayDescriptionMatches[1][$intIndex])),
+                ISEStrategy::FIELD_TITLE        => isset($arrayTitleMatches[1][$intIndex])
+                    ? html_entity_decode(strip_tags($arrayTitleMatches[1][$intIndex]))
+                    : '',
+                ISEStrategy::FIELD_URL          => isset($arrayUrlMatches[1][$intIndex])
+                    ? html_entity_decode(strip_tags($arrayUrlMatches[1][$intIndex]))
+                    : '',
+                ISEStrategy::FIELD_DESCRIPTION  => isset($arrayDescriptionMatches[1][$intIndex])
+                    ? html_entity_decode(strip_tags($arrayDescriptionMatches[1][$intIndex]))
+                    : ''
             );
         }
         return $arrayResults;
