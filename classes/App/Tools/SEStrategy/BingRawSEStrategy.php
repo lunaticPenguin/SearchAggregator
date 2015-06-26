@@ -22,9 +22,9 @@ class BingRawSEStrategy extends AbstractSEStrategy
         );
 
         $this->hashFieldsRegexp = array(
-            ISEStrategy::FIELD_TITLE        => '/<li class="b_algo"><h2><a.*>(.*)<\/a><\/h2>/Uim',
+            ISEStrategy::FIELD_TITLE        => '/<li class="b_algo".*><h2><a.*>(.*)<\/a><\/h2>/Uim',
             ISEStrategy::FIELD_DESCRIPTION  => '/<li class="b_algo">.*<div class="b_caption">.*<p>(.*)<\/p>/Uim',
-            ISEStrategy::FIELD_URL          => '/<li class="b_algo"><h2><a href="(.*)".*>/U',
+            ISEStrategy::FIELD_URL          => '/<li class="b_algo".*><h2><a href="(.*)".*>/U',
             ISEStrategy::FIELD_SUGGESTION   => '/<div class="sa_tm">(.*?)<\/div>/mi'
         );
     }
@@ -54,7 +54,6 @@ class BingRawSEStrategy extends AbstractSEStrategy
         $boolStatus = preg_match_all($this->hashFieldsRegexp[ISEStrategy::FIELD_TITLE], $mixedResult, $arrayTitleMatches) !== false;
         $boolStatus = preg_match_all($this->hashFieldsRegexp[ISEStrategy::FIELD_URL], $mixedResult, $arrayUrlMatches) !== false && $boolStatus;
         $boolStatus = preg_match_all($this->hashFieldsRegexp[ISEStrategy::FIELD_DESCRIPTION], $mixedResult, $arrayDescriptionMatches) !== false && $boolStatus;
-
 
         if (!$boolStatus) {
             return $arrayResults;
