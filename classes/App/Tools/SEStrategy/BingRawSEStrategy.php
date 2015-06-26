@@ -23,7 +23,7 @@ class BingRawSEStrategy extends AbstractSEStrategy
 
         $this->hashFieldsRegexp = array(
             ISEStrategy::FIELD_TITLE        => '/<li class="b_algo".*><h2><a.*>(.*)<\/a><\/h2>/Uim',
-            ISEStrategy::FIELD_DESCRIPTION  => '/<li class="b_algo">.*<div class="b_caption">.*<p>(.*)<\/p>/Uim',
+            ISEStrategy::FIELD_DESCRIPTION  => '/<li class="b_algo">.*<div class="b_caption.*>.*<p>(.*)<\/p>/Uim',
             ISEStrategy::FIELD_URL          => '/<li class="b_algo".*><h2><a href="(.*)".*>/U',
             ISEStrategy::FIELD_SUGGESTION   => '/<div class="sa_tm">(.*?)<\/div>/mi'
         );
