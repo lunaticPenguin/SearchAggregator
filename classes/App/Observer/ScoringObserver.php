@@ -2,6 +2,7 @@
 
 namespace App\Observer;
 
+use App\Config;
 use App\Observers\ObserverHandler;
 use App\Observers\AbstractObserver;
 use App\Tools\SEStrategy\ISEStrategy;
@@ -63,6 +64,8 @@ class ScoringObserver extends AbstractObserver
             return $hashResults;
         }
 
+        $hashRegisteredEngines = Config::getValue('registered_engines');
+
         $hashUrlFactors = array();
         $intNbEngine = count($hashResults);
         foreach ($hashResults as $strEngine => $arrayResult) {
@@ -104,7 +107,13 @@ class ScoringObserver extends AbstractObserver
             foreach ($hashResults as $strEngine => $arrayResults) {
                 foreach ($arrayResults as $hashResultFields) {
                     if ($strUrlKey === $hashResultFields[ISEStrategy::FIELD_URL] && !in_array($hashResultFields[ISEStrategy::FIELD_URL], $arrayDuplicata, true)) {
-                        $hashResults['Scoring'][] = array_merge($hashResultFields, array('scoring' => $hashResultInfos['scoring']));
+
+                        // résolution du nom des moteurs concernés par le résultat
+                        $arrayConcernedEngines = array();
+                        foreach ($hashResultInfos['index'] as $strEngine => $intUnusedIndex) {
+                            $arrayConcernedEngines[] = $hashRegisteredEngines[$strEngine]['label'];
+                        }
+                        $hashResults['Scoring'][] = array_merge($hashResultFields, array('scoring' => $hashResultInfos['scoring'], 'engines' => $arrayConcernedEngines));
                         $arrayDuplicata[] = $hashResultFields[ISEStrategy::FIELD_URL];
                     }
                 }

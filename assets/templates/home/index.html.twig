@@ -41,11 +41,20 @@
                 <div class="list-group{% if current_engine == strSEKey %} active{% endif %}">
                     {% for intKey, hashRow in hashContent[strSEKey]['data'] %}
                     <a href="{{ hashRow[1] }}" class="list-group-item" target="_blank">
-                        <h4 class="list-group-item-heading">{{ hashRow[0] }}</h4>
+                        <h4 class="list-group-item-heading">{{ hashRow[0] }}
+                        {% if hashRow['engines'] is defined %}
+                            {% if hashRow['scoring'] is defined %}
+                            <span class="label label-warning pull-right" title="Score: {{ hashRow['scoring'] }}">{{ hashRow['scoring'] }}</span>
+                            {% endif %}
+                            {% for strEngine in hashRow['engines'] %}
+                            <span class="label label-default pull-right" style="margin-right: 2px;" title="Found on {{ strEngine }} engine">{{ strEngine }}</span>
+                            {% endfor %}
+                        {% endif %}
+                        </h4>
                         <p class="list-group-item-text">{{ hashRow[2]|raw }}</p>
                     </a>
                     {% endfor %}
-                    {% include 'global/_pager.html.twig' with {'strCurrentEngine': strSEKey, 'strUrl' : '/home/index'} %}
+                    {% include 'global/_pager.html.twig' with {'strCurrentEngine': strSEKey, 'strUrl' : ''} %}
                 </div>
                 {% endif %}
             {% endfor %}
